@@ -4,25 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title</title>
+    <title>Date Difference</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
 
-    <form>
-        <input type="datetime-local" id="date1" oninput="DateChanged()">
-        <input type="datetime-local" id="date2" oninput="DateChanged()">
-    </form>
+    <label for="startDate">Başlangıç Tarihi:</label>
+    <input type="datetime-local" id="startDate">
 
-    <span id="difference"></span>
+    <br><br>
 
-    <script>
-        let startDate = document.getElementById("date1");
-        let endDate = document.getElementById("date2");
+    <label for="endDate">Bitiş Tarihi:</label>
+    <input type="datetime-local" id="endDate">
 
-        // startDate ve endDate sayfanın yüklendiği tarih ve saati gösterecek.
+    <br>
+    
+    <button id="btn" onclick="calculateDateDifference()">Farkı Hesapla</button>
 
-    </script>
+    <p id="result"></p>
+
+    <script src="script.js"></script>
 
 </body>
 
