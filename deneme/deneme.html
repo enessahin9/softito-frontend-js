@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Placeholder Viewer</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 50px;
+            cursor: pointer;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <button onclick="getData('posts')">Get Posts</button>
+        <button onclick="getData('comments')">Get Comments</button>
+        <button onclick="getData('albums')">Get Albums</button>
+        <button onclick="getData('photos')">Get Photos</button>
+        <button onclick="getData('todos')">Get Todos</button>
+        <button onclick="getData('users')">Get Users</button>
+    </div>
+    
+    <div id="data-container"></div>
+
+    <script>
+        function getData(endpoint) {
+            fetch(`https://jsonplaceholder.typicode.com/${endpoint}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayData(data, endpoint);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayData(data, endpoint) {
+            const container = document.getElementById('data-container');
+            container.innerHTML = '';
+
+            if (endpoint === 'photos') {
+                data.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo.thumbnailUrl;
+                    img.alt = 'Thumbnail';
+                    img.addEventListener('click', () => window.open(photo.url, '_blank'));
+                    container.appendChild(img);
+                });
+            } else if (endpoint === 'albums') {
+                data.forEach(album => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `<h3>${album.title}</h3><p>User ID: ${album.userId}</p>`;
+                    card.addEventListener('click', () => getPhotosByUserId(album.userId));
+                    container.appendChild(card);
+                });
+            } else {
+                const table = document.createElement('table');
+                const headerRow = table.createTHead().insertRow(0);
+
+                for (const key in data[0]) {
+                    const th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
+                }
+
+                data.forEach(item => {
+                    const row = table.insertRow();
+                    for (const key in item) {
+                        const cell = row.insertCell();
+                        cell.textContent = item[key];
+                    }
+                });
+
+                container.appendChild(table);
+            }
+        }
+
+        function getPhotosByUserId(userId) {
+            fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayData(data, 'photos');
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
